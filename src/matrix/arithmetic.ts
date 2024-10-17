@@ -1,3 +1,4 @@
+import { leastCommendMultiple } from "../natural_number/arithmetic";
 import { Matrix } from "./matrix";
 
 export function add(a: Matrix, b: Matrix): Matrix {
@@ -57,7 +58,27 @@ export function transpose(a: Matrix): Matrix {
 }
 
 export function toEchelonFrom(a: Matrix): Matrix {
-    const result = new Matrix();
+    const result = a.clone();
+
+    for (let i = 0; i < Math.min(a.numberOfColumns, a.numberOfRows); i++) {
+        const pivot = result.getRow(i)?.[i];
+        if (pivot === undefined) {
+            throw new Error(`Pivot element at row ${i} is undefined`);
+        }
+        for (let j = i + 1; j < a.numberOfRows; j++) {
+            const element = result.getRow(j)?.[i];
+            if (element === undefined) {
+                throw new Error(`Element at row ${j}, column ${i} is undefined`);
+            }
+            const lcm = leastCommendMultiple(pivot, element);
+            const rowI = result.getRow(i);
+            const rowJ = result.getRow(j);
+            if (rowI && rowJ) {
+                const row = rowJ.map((value, index) => (value * lcm) / element - (rowI[index] * lcm) / pivot);
+                result.replaceRow(j, row);
+            }
+        }
+    }
 
     return result;
 }

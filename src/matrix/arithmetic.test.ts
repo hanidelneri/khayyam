@@ -112,7 +112,7 @@ describe("add", () => {
         expect(result.getRow(1)).toEqual([2, 4, 6]);
     });
 
-    test("should convert a matrix to echelon form", () => {
+    test("should convert a matrix to echelon form for square matrix", () => {
         matrixA.addRow([1, 2, 3]);
         matrixA.addRow([4, 5, 6]);
         matrixA.addRow([7, 8, 9]);
@@ -121,5 +121,27 @@ describe("add", () => {
         expect(result.getRow(0)).toEqual([1, 2, 3]);
         expect(result.getRow(1)).toEqual([0, -3, -6]);
         expect(result.getRow(2)).toEqual([0, 0, 0]);
+    });
+
+    test("should convert a matrix to echelon form for non-square matrix", () => {
+        matrixA.addRow([1, 2, 3, 4]);
+        matrixA.addRow([5, 6, 7, 8]);
+        matrixA.addRow([9, 10, 11, 12]);
+
+        const resultA = toEchelonFrom(matrixA);
+        expect(resultA.getRow(0)).toEqual([1, 2, 3, 4]);
+        expect(resultA.getRow(1)).toEqual([0, -4, -8, -12]);
+        expect(resultA.getRow(2)).toEqual([0, 0, 0, 0]);
+
+        matrixB.addRow([1, 2]);
+        matrixB.addRow([3, 4]);
+        matrixB.addRow([5, 6]);
+        matrixB.addRow([7, 8]);
+
+        const resultB = toEchelonFrom(matrixB);
+        expect(resultB.getRow(0)).toEqual([1, 2]);
+        expect(resultB.getRow(1)).toEqual([0, -2]);
+        expect(resultB.getRow(2)).toEqual([0, 0]);
+        expect(resultB.getRow(3)).toEqual([0, 0]);
     });
 });
