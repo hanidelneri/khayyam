@@ -36,4 +36,22 @@ describe("Matrix", () => {
         matrix.addRow([1, 2, 3]);
         expect(matrix.numberOfColumns).toBe(3);
     });
+
+    test("should return the correct column from a matrix with multiple rows", () => {
+        matrix.addRow([1, 2, 3]);
+        matrix.addRow([4, 5, 6]);
+        matrix.addRow([7, 8, 9]);
+
+        expect(matrix.getColumn(0)).toEqual([1, 4, 7]);
+        expect(matrix.getColumn(1)).toEqual([2, 5, 8]);
+        expect(matrix.getColumn(2)).toEqual([3, 6, 9]);
+    });
+
+    test("should return the correct column from a matrix with a single row", () => {
+        matrix.addRow([1, 2, 3]);
+
+        expect(matrix.getColumn(0)).toEqual([1]);
+        expect(matrix.getColumn(1)).toEqual([2]);
+        expect(matrix.getColumn(2)).toEqual([3]);
+    });
 });

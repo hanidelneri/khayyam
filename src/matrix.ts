@@ -20,6 +20,10 @@ export class Matrix {
         return this.data[index];
     }
 
+    getColumn(index: number): number[] {
+        return this.data.map((row) => row[index]);
+    }
+
     get numberOfRows(): number {
         return this.data.length;
     }
