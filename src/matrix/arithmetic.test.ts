@@ -1,5 +1,5 @@
 import { Matrix } from "./matrix";
-import { add, multiply, transpose } from "./arithmetic";
+import { add, multiply, transpose, toEchelonFrom } from "./arithmetic";
 
 describe("add", () => {
     let matrixA: Matrix;
@@ -110,5 +110,16 @@ describe("add", () => {
 
         expect(result.getRow(0)).toEqual([1, 3, 5]);
         expect(result.getRow(1)).toEqual([2, 4, 6]);
+    });
+
+    test("should convert a matrix to echelon form", () => {
+        matrixA.addRow([1, 2, 3]);
+        matrixA.addRow([4, 5, 6]);
+        matrixA.addRow([7, 8, 9]);
+
+        const result = toEchelonFrom(matrixA);
+        expect(result.getRow(0)).toEqual([1, 2, 3]);
+        expect(result.getRow(1)).toEqual([0, -3, -6]);
+        expect(result.getRow(2)).toEqual([0, 0, 0]);
     });
 });

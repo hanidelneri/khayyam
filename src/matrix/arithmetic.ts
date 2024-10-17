@@ -55,3 +55,9 @@ export function transpose(a: Matrix): Matrix {
 
     return result;
 }
+
+export function toEchelonFrom(a: Matrix): Matrix {
+    const result = new Matrix();
+
+    return result;
+}
