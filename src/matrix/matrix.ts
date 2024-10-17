@@ -16,6 +16,13 @@ export class Matrix {
         this.data.push(row);
     }
 
+    replaceRow(index: number, row: number[]): void {
+        if (row.length !== this.rowLength) {
+            throw new Error(`Row length must be ${this.rowLength}`);
+        }
+        this.data[index] = row;
+    }
+
     getRow(index: number): number[] | undefined {
         return this.data[index];
     }
@@ -30,5 +37,11 @@ export class Matrix {
 
     get numberOfColumns(): number {
         return this.rowLength !== null ? this.rowLength : 0;
+    }
+
+    clone(): Matrix {
+        const clone = new Matrix();
+        this.data.forEach((row) => clone.addRow([...row]));
+        return clone;
     }
 }
