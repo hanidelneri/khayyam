@@ -1,5 +1,5 @@
 import { Matrix } from "./matrix";
-import { add } from "./arithmetic";
+import { add, multiply, transpose } from "./arithmetic";
 
 describe("add", () => {
     let matrixA: Matrix;
@@ -41,5 +41,74 @@ describe("add", () => {
 
         expect(result.getRow(0)).toEqual([0, 0, 0]);
         expect(result.getRow(1)).toEqual([0, 0, 0]);
+    });
+
+    test("should multiply two matrices with compatible dimensions", () => {
+        matrixA.addRow([1, 2, 3]);
+        matrixA.addRow([4, 5, 6]);
+
+        matrixB.addRow([7, 8]);
+        matrixB.addRow([9, 10]);
+        matrixB.addRow([11, 12]);
+
+        const result = multiply(matrixA, matrixB);
+
+        expect(result.getRow(0)).toEqual([58, 64]);
+        expect(result.getRow(1)).toEqual([139, 154]);
+    });
+
+    test("should throw an error when multiplying matrices with incompatible dimensions", () => {
+        matrixA.addRow([1, 2]);
+        matrixA.addRow([3, 4]);
+
+        matrixB.addRow([5, 6, 7]);
+
+        expect(() => multiply(matrixA, matrixB)).toThrow(
+            "The number of columns in the first matrix must be equal to the number of rows in the second matrix"
+        );
+    });
+
+    test("should multiply matrices with negative and positive numbers", () => {
+        matrixA.addRow([-1, 2]);
+        matrixA.addRow([3, -4]);
+
+        matrixB.addRow([5, -6]);
+        matrixB.addRow([-7, 8]);
+
+        const result = multiply(matrixA, matrixB);
+
+        expect(result.getRow(0)).toEqual([-19, 22]);
+        expect(result.getRow(1)).toEqual([43, -50]);
+    });
+
+    test("should transpose a matrix with multiple rows and columns", () => {
+        matrixA.addRow([1, 2, 3]);
+        matrixA.addRow([4, 5, 6]);
+        matrixA.addRow([7, 8, 9]);
+
+        const result = transpose(matrixA);
+
+        expect(result.getRow(0)).toEqual([1, 4, 7]);
+        expect(result.getRow(1)).toEqual([2, 5, 8]);
+        expect(result.getRow(2)).toEqual([3, 6, 9]);
+    });
+
+    test("should transpose a matrix with a single row and column", () => {
+        matrixA.addRow([1]);
+
+        const result = transpose(matrixA);
+
+        expect(result.getRow(0)).toEqual([1]);
+    });
+
+    test("should transpose a matrix with different numbers of rows and columns", () => {
+        matrixA.addRow([1, 2]);
+        matrixA.addRow([3, 4]);
+        matrixA.addRow([5, 6]);
+
+        const result = transpose(matrixA);
+
+        expect(result.getRow(0)).toEqual([1, 3, 5]);
+        expect(result.getRow(1)).toEqual([2, 4, 6]);
     });
 });
