@@ -14,5 +14,6 @@ describe("NaturalNumber", () => {
         expect(leastCommendMultiple(10, 0)).toBe(0);
         expect(leastCommendMultiple(2, 3)).toBe(6);
         expect(leastCommendMultiple(4, 6)).toBe(12);
+        expect(leastCommendMultiple(-3, -6)).toBe(-6);
     });
 });
