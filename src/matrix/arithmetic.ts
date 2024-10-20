@@ -70,15 +70,57 @@ export function toEchelonFrom(a: Matrix): Matrix {
             if (element === undefined) {
                 throw new Error(`Element at row ${j}, column ${i} is undefined`);
             }
-            const lcm = leastCommendMultiple(pivot, element);
             const rowI = result.getRow(i);
             const rowJ = result.getRow(j);
             if (rowI && rowJ) {
-                const row = rowJ.map((value, index) => (value * lcm) / element - (rowI[index] * lcm) / pivot);
-                result.replaceRow(j, row);
+                result.replaceRow(j, reduceRowsComparedToPivot(rowI, rowJ, i));
             }
         }
     }
 
     return result;
+}
+
+export function toReducedEchelonForm(a: Matrix): Matrix {
+    const result = a.clone();
+
+    for (let i = 0; i < a.numberOfRows; i++) {
+        const pivot = a.getRow(i)?.[i];
+        if (pivot === undefined) {
+            throw new Error(`Pivot element at row ${i} is undefined`);
+        }
+        for (let j = 0; j < a.numberOfRows; j++) {
+            if (i !== j) {
+                const rowI = result.getRow(i);
+                const rowJ = result.getRow(j);
+                if (rowI && rowJ) {
+                    result.replaceRow(j, reduceRowsComparedToPivot(rowI, rowJ, i));
+                }
+            }
+        }
+    }
+
+    for (let i = 0; i < a.numberOfRows; i++) {
+        const row = result.getRow(i);
+        if (row) {
+            const pivot = row[i];
+            if (pivot) {
+                result.replaceRow(
+                    i,
+                    row.map((value) => value / pivot)
+                );
+            }
+        }
+    }
+
+    return result;
+}
+
+export function reduceRowsComparedToPivot(pivotRow: number[], targetRow: number[], pivotIndex: number): number[] {
+    if (pivotRow[pivotIndex] === 0 || targetRow[pivotIndex] === 0) {
+        return targetRow;
+    }
+    const lcm = leastCommendMultiple(pivotRow[pivotIndex], targetRow[pivotIndex]);
+
+    return targetRow.map((value, index) => (value * lcm) / targetRow[pivotIndex] - (pivotRow[index] * lcm) / pivotRow[pivotIndex]);
 }

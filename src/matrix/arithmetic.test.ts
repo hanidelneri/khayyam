@@ -1,5 +1,5 @@
 import { Matrix } from "./matrix";
-import { add, multiply, transpose, toEchelonFrom } from "./arithmetic";
+import { add, multiply, transpose, toEchelonFrom, reduceRowsComparedToPivot, toReducedEchelonForm } from "./arithmetic";
 
 describe("add", () => {
     let matrixA: Matrix;
@@ -143,5 +143,73 @@ describe("add", () => {
         expect(resultB.getRow(1)).toEqual([0, -2]);
         expect(resultB.getRow(2)).toEqual([0, 0]);
         expect(resultB.getRow(3)).toEqual([0, 0]);
+    });
+
+    test("should reduce rows compared to pivot element", () => {
+        expect(reduceRowsComparedToPivot([1, 2, 3], [4, 5, 6], 0)).toEqual([0, -3, -6]);
+        expect(reduceRowsComparedToPivot([1, 2, 3], [4, 5, 6], 1)).toEqual([3, 0, -3]);
+    });
+
+    test("should reduce rows compared to pivot element with zero pivot", () => {
+        expect(reduceRowsComparedToPivot([0, 2, 3], [4, 5, 6], 0)).toEqual([4, 5, 6]);
+        expect(reduceRowsComparedToPivot([1, 2, 3], [0, 5, 6], 0)).toEqual([0, 5, 6]);
+        expect(reduceRowsComparedToPivot([0, 0, 3], [4, 5, 6], 1)).toEqual([4, 5, 6]);
+    });
+
+    test("should convert a matrix to reduced echelon form", () => {
+        matrixA.addRow([1, 2, 3]);
+        matrixA.addRow([4, 5, 6]);
+        matrixA.addRow([7, 8, 9]);
+
+        const result = toReducedEchelonForm(matrixA);
+        expect(result.getRow(0)).toEqual([1, 0, -1]);
+        expect(result.getRow(1)).toEqual([-0, 1, 2]);
+        expect(result.getRow(2)).toEqual([0, 0, 0]);
+    });
+
+    test("should return the same matrix if it is already in reduced echelon form", () => {
+        matrixA.addRow([1, 0, 0]);
+        matrixA.addRow([0, 1, 0]);
+        matrixA.addRow([0, 0, 1]);
+
+        const result = toReducedEchelonForm(matrixA);
+
+        expect(result.getRow(0)).toEqual([1, 0, 0]);
+        expect(result.getRow(1)).toEqual([0, 1, 0]);
+        expect(result.getRow(2)).toEqual([0, 0, 1]);
+    });
+
+    test("should handle a matrix with all zero rows", () => {
+        matrixA.addRow([0, 0, 0]);
+        matrixA.addRow([0, 0, 0]);
+        matrixA.addRow([0, 0, 0]);
+
+        const result = toReducedEchelonForm(matrixA);
+
+        expect(result.getRow(0)).toEqual([0, 0, 0]);
+        expect(result.getRow(1)).toEqual([0, 0, 0]);
+        expect(result.getRow(2)).toEqual([0, 0, 0]);
+    });
+
+    test("should handle a matrix with fractional values", () => {
+        matrixA.addRow([0.5, 1.5, -2.5]);
+        matrixA.addRow([1.5, -0.5, 2.5]);
+        matrixA.addRow([-2.5, 2.5, 0.5]);
+
+        const result = toReducedEchelonForm(matrixA);
+
+        expect(result.getRow(0)).toEqual([1, 0, 0]);
+        expect(result.getRow(1)).toEqual([-0, 1, -0]);
+        expect(result.getRow(2)).toEqual([0, 0, 1]);
+    });
+
+    test("should handle a non-square matrix", () => {
+        matrixA.addRow([1, 2, 3]);
+        matrixA.addRow([4, 5, 6]);
+
+        const result = toReducedEchelonForm(matrixA);
+
+        expect(result.getRow(0)).toEqual([1, 0, -1]);
+        expect(result.getRow(1)).toEqual([-0, 1, 2]);
     });
 });
