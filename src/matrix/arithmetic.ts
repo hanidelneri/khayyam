@@ -6,17 +6,13 @@ export function add(a: Matrix, b: Matrix): Matrix {
         throw new Error("Matrices must have the same dimensions");
     }
     const result = new Matrix();
-    for (let i = 0; i < a.numberOfRows; i++) {
-        const row: number[] = [];
-        for (let j = 0; j < a.numberOfColumns; j++) {
-            const aValue = a.getRow(i)?.[j];
-            const bValue = b.getRow(i)?.[j];
-            if (typeof aValue === "number" && typeof bValue === "number") {
-                row.push(aValue + bValue);
-            }
-        }
-        result.addRow(row);
-    }
+    a.rows.forEach((row, index) => {
+        const newRow: number[] = [];
+        row.forEach((value, columnIndex) => {
+            newRow.push(value + (b.getRow(index)?.[columnIndex] ?? 0));
+        });
+        result.addRow(newRow);
+    });
 
     return result;
 }
@@ -28,31 +24,27 @@ export function multiply(a: Matrix, b: Matrix): Matrix {
 
     const result = new Matrix();
 
-    for (let i = 0; i < a.numberOfRows; i++) {
-        const row: number[] = [];
-        for (let j = 0; j < b.numberOfColumns; j++) {
-            let sum = 0;
-            for (let k = 0; k < b.numberOfRows; k++) {
-                const aValue = a.getRow(i)?.[k];
-                const bValue = b.getRow(k)?.[j];
-                if (typeof aValue === "number" && typeof bValue === "number") {
-                    sum += aValue * bValue;
-                }
-            }
-            row.push(sum);
-        }
-        result.addRow(row);
-    }
+    a.rows.forEach((row, index) => {
+        const newRow: number[] = [];
+        b.columns.forEach((column) => {
+            newRow.push(reduceRowsByMultiplication(row, column));
+        });
+        result.addRow(newRow);
+    });
 
     return result;
 }
 
+function reduceRowsByMultiplication(a: number[], b: number[]): number {
+    return a.reduce((sum, value, index) => sum + value * b[index], 0);
+}
+
 export function transpose(a: Matrix): Matrix {
     const result = new Matrix();
-
-    for (let i = 0; i < a.numberOfColumns; i++) {
-        result.addRow(a.getColumn(i));
-    }
+    
+    a.columns.forEach((column) => {
+        result.addRow(column);
+    });
 
     return result;
 }

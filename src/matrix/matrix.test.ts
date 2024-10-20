@@ -66,4 +66,18 @@ describe("Matrix", () => {
         expect(matrix.getColumn(1)).toEqual([2]);
         expect(matrix.getColumn(2)).toEqual([3]);
     });
+
+    test("should return the correct columns for a matrix with multiple rows and columns", () => {
+        const matrix = new Matrix([
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+        ]);
+
+        expect(matrix.columns).toEqual([
+            [1, 4, 7],
+            [2, 5, 8],
+            [3, 6, 9],
+        ]);
+    });
 });

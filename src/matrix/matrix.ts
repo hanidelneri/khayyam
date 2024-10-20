@@ -65,6 +65,10 @@ export class Matrix {
         return this.data;
     }
 
+    get columns(): number[][] {
+        return Array.from({ length: this.numberOfColumns }, (_, index) => this.getColumn(index));
+    }
+
     clone(): Matrix {
         const clone = new Matrix();
         this.data.forEach((row) => clone.addRow([...row]));
