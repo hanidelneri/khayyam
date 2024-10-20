@@ -42,19 +42,15 @@ describe("add", () => {
         expect(result.getRow(0)).toEqual([0, 0, 0]);
         expect(result.getRow(1)).toEqual([0, 0, 0]);
     });
+});
 
-    test("should multiply two matrices with compatible dimensions", () => {
-        matrixA.addRow([1, 2, 3]);
-        matrixA.addRow([4, 5, 6]);
+describe("multiply", () => {
+    let matrixA: Matrix;
+    let matrixB: Matrix;
 
-        matrixB.addRow([7, 8]);
-        matrixB.addRow([9, 10]);
-        matrixB.addRow([11, 12]);
-
-        const result = multiply(matrixA, matrixB);
-
-        expect(result.getRow(0)).toEqual([58, 64]);
-        expect(result.getRow(1)).toEqual([139, 154]);
+    beforeEach(() => {
+        matrixA = new Matrix();
+        matrixB = new Matrix();
     });
 
     test("should throw an error when multiplying matrices with incompatible dimensions", () => {
@@ -81,12 +77,34 @@ describe("add", () => {
         expect(result.getRow(1)).toEqual([43, -50]);
     });
 
-    test("should transpose a matrix with multiple rows and columns", () => {
+    test("should multiply two matrices with compatible dimensions", () => {
         matrixA.addRow([1, 2, 3]);
         matrixA.addRow([4, 5, 6]);
-        matrixA.addRow([7, 8, 9]);
 
-        const result = transpose(matrixA);
+        matrixB.addRow([7, 8]);
+        matrixB.addRow([9, 10]);
+        matrixB.addRow([11, 12]);
+
+        const result = multiply(matrixA, matrixB);
+
+        expect(result.getRow(0)).toEqual([58, 64]);
+        expect(result.getRow(1)).toEqual([139, 154]);
+    });
+});
+
+describe("transpose", () => {
+    let matrix: Matrix;
+
+    beforeEach(() => {
+        matrix = new Matrix();
+    });
+
+    test("should transpose a matrix with multiple rows and columns", () => {
+        matrix.addRow([1, 2, 3]);
+        matrix.addRow([4, 5, 6]);
+        matrix.addRow([7, 8, 9]);
+
+        const result = transpose(matrix);
 
         expect(result.getRow(0)).toEqual([1, 4, 7]);
         expect(result.getRow(1)).toEqual([2, 5, 8]);
@@ -94,22 +112,43 @@ describe("add", () => {
     });
 
     test("should transpose a matrix with a single row and column", () => {
-        matrixA.addRow([1]);
+        matrix.addRow([1]);
 
-        const result = transpose(matrixA);
+        const result = transpose(matrix);
 
         expect(result.getRow(0)).toEqual([1]);
     });
 
     test("should transpose a matrix with different numbers of rows and columns", () => {
-        matrixA.addRow([1, 2]);
-        matrixA.addRow([3, 4]);
-        matrixA.addRow([5, 6]);
+        matrix.addRow([1, 2]);
+        matrix.addRow([3, 4]);
+        matrix.addRow([5, 6]);
 
-        const result = transpose(matrixA);
+        const result = transpose(matrix);
 
         expect(result.getRow(0)).toEqual([1, 3, 5]);
         expect(result.getRow(1)).toEqual([2, 4, 6]);
+    });
+});
+
+describe("echelon-form", () => {
+    let matrixA: Matrix;
+    let matrixB: Matrix;
+
+    beforeEach(() => {
+        matrixA = new Matrix();
+        matrixB = new Matrix();
+    });
+
+    test("should reduce rows compared to pivot element", () => {
+        expect(reduceRowsComparedToPivot([1, 2, 3], [4, 5, 6], 0)).toEqual([0, -3, -6]);
+        expect(reduceRowsComparedToPivot([1, 2, 3], [4, 5, 6], 1)).toEqual([3, 0, -3]);
+    });
+
+    test("should reduce rows compared to pivot element with zero pivot", () => {
+        expect(reduceRowsComparedToPivot([0, 2, 3], [4, 5, 6], 0)).toEqual([4, 5, 6]);
+        expect(reduceRowsComparedToPivot([1, 2, 3], [0, 5, 6], 0)).toEqual([0, 5, 6]);
+        expect(reduceRowsComparedToPivot([0, 0, 3], [4, 5, 6], 1)).toEqual([4, 5, 6]);
     });
 
     test("should convert a matrix to echelon form for square matrix", () => {
@@ -145,17 +184,6 @@ describe("add", () => {
         expect(resultB.getRow(3)).toEqual([0, 0]);
     });
 
-    test("should reduce rows compared to pivot element", () => {
-        expect(reduceRowsComparedToPivot([1, 2, 3], [4, 5, 6], 0)).toEqual([0, -3, -6]);
-        expect(reduceRowsComparedToPivot([1, 2, 3], [4, 5, 6], 1)).toEqual([3, 0, -3]);
-    });
-
-    test("should reduce rows compared to pivot element with zero pivot", () => {
-        expect(reduceRowsComparedToPivot([0, 2, 3], [4, 5, 6], 0)).toEqual([4, 5, 6]);
-        expect(reduceRowsComparedToPivot([1, 2, 3], [0, 5, 6], 0)).toEqual([0, 5, 6]);
-        expect(reduceRowsComparedToPivot([0, 0, 3], [4, 5, 6], 1)).toEqual([4, 5, 6]);
-    });
-
     test("should convert a matrix to reduced echelon form", () => {
         matrixA.addRow([1, 2, 3]);
         matrixA.addRow([4, 5, 6]);
@@ -179,7 +207,7 @@ describe("add", () => {
         expect(result.getRow(2)).toEqual([0, 0, 1]);
     });
 
-    test("should handle a matrix with all zero rows", () => {
+    test("should convert a matrix with all zero rows to reduced echelon form", () => {
         matrixA.addRow([0, 0, 0]);
         matrixA.addRow([0, 0, 0]);
         matrixA.addRow([0, 0, 0]);
@@ -191,7 +219,7 @@ describe("add", () => {
         expect(result.getRow(2)).toEqual([0, 0, 0]);
     });
 
-    test("should handle a matrix with fractional values", () => {
+    test("should convert  a matrix with fractional values to reduced echelon form", () => {
         matrixA.addRow([0.5, 1.5, -2.5]);
         matrixA.addRow([1.5, -0.5, 2.5]);
         matrixA.addRow([-2.5, 2.5, 0.5]);
@@ -203,7 +231,7 @@ describe("add", () => {
         expect(result.getRow(2)).toEqual([0, 0, 1]);
     });
 
-    test("should handle a non-square matrix", () => {
+    test("should convert a non-square matrix to reduced echelon form", () => {
         matrixA.addRow([1, 2, 3]);
         matrixA.addRow([4, 5, 6]);
 
