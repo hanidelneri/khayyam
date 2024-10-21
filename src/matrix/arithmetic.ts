@@ -116,3 +116,29 @@ export function reduceRowsComparedToPivot(pivotRow: number[], targetRow: number[
 
     return targetRow.map((value, index) => (value * lcm) / targetRow[pivotIndex] - (pivotRow[index] * lcm) / pivotRow[pivotIndex]);
 }
+
+export function toAugmentedMatrix(a: Matrix, b: Matrix): Matrix {
+    if (a.numberOfRows !== b.numberOfRows) {
+        throw new Error("Matrices must have the same number of rows");
+    }
+    const result = new Matrix();
+    a.rows.forEach((row, index) => {
+        const newRow = row.concat(b.getRow(index) ?? []);
+        result.addRow(newRow);
+    });
+
+    return result;
+}
+
+export function identityMatrix(size: number): Matrix {
+    const result = new Matrix();
+    for (let i = 0; i < size; i++) {
+        const row: number[] = [];
+        for (let j = 0; j < size; j++) {
+            row.push(i === j ? 1 : 0);
+        }
+        result.addRow(row);
+    }
+
+    return result;
+}

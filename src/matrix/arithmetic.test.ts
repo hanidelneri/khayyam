@@ -1,5 +1,14 @@
 import { Matrix } from "./matrix";
-import { add, multiply, transpose, toEchelonFrom, reduceRowsComparedToPivot, toReducedEchelonForm } from "./arithmetic";
+import {
+    add,
+    multiply,
+    transpose,
+    toEchelonFrom,
+    reduceRowsComparedToPivot,
+    toReducedEchelonForm,
+    toAugmentedMatrix,
+    identityMatrix,
+} from "./arithmetic";
 
 describe("add", () => {
     test("should add two matrices of the same dimensions", () => {
@@ -265,6 +274,53 @@ describe("echelon-form", () => {
         expect(result.rows).toEqual([
             [1, 0, -1],
             [-0, 1, 2],
+        ]);
+    });
+});
+
+describe("augmented matrix", () => {
+    test("should augment two matrices with the same number of rows", () => {
+        const matrixA = new Matrix([
+            [1, 2],
+            [3, 4],
+        ]);
+        const matrixB = new Matrix([
+            [5, 6],
+            [7, 8],
+        ]);
+
+        const result = toAugmentedMatrix(matrixA, matrixB);
+
+        expect(result.rows).toEqual([
+            [1, 2, 5, 6],
+            [3, 4, 7, 8],
+        ]);
+    });
+
+    test("should throw an error when augmenting matrices with different numbers of rows", () => {
+        const matrixA = new Matrix([[1, 2]]);
+        const matrixB = new Matrix([
+            [3, 4],
+            [5, 6],
+        ]);
+
+        expect(() => toAugmentedMatrix(matrixA, matrixB)).toThrow("Matrices must have the same number of rows");
+    });
+});
+
+describe("identity matrix", () => {
+    test("should create an identity matrix of size 1", () => {
+        const result = identityMatrix(1);
+
+        expect(result.rows).toEqual([[1]]);
+    });
+
+    test("should create an identity matrix of size 2", () => {
+        const result = identityMatrix(2);
+
+        expect(result.rows).toEqual([
+            [1, 0],
+            [0, 1],
         ]);
     });
 });
