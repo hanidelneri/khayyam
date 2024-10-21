@@ -73,7 +73,10 @@ export function toEchelonFrom(a: Matrix): Matrix {
     return result;
 }
 
-export function toReducedEchelonForm(a: Matrix): Matrix {
+export function toReducedEchelonForm(a: Matrix, index?: number): Matrix {
+    if (index === undefined) {
+        index = a.numberOfColumns - 1;
+    }
     const result = a.clone();
 
     for (let i = 0; i < a.numberOfRows; i++) {
@@ -114,7 +117,9 @@ export function reduceRowsComparedToPivot(pivotRow: number[], targetRow: number[
     }
     const lcm = leastCommendMultiple(pivotRow[pivotIndex], targetRow[pivotIndex]);
 
-    return targetRow.map((value, index) => (value * lcm) / targetRow[pivotIndex] - (pivotRow[index] * lcm) / pivotRow[pivotIndex]);
+    return targetRow.map(
+        (value, index) => (value * lcm) / targetRow[pivotIndex] - (pivotRow[index] * lcm) / pivotRow[pivotIndex]
+    );
 }
 
 export function toAugmentedMatrix(a: Matrix, b: Matrix): Matrix {
@@ -141,4 +146,14 @@ export function identityMatrix(size: number): Matrix {
     }
 
     return result;
+}
+
+export function inverse(a: Matrix): Matrix {
+    if (a.numberOfRows !== a.numberOfColumns) {
+        throw new Error("Matrix must be square");
+    }
+    const augmentedMatrix = toAugmentedMatrix(a, identityMatrix(a.numberOfRows));
+    const echelonForm = toReducedEchelonForm(augmentedMatrix, a.numberOfColumns);
+
+    return new Matrix(echelonForm.rows.map((row) => row.slice(a.numberOfRows)));
 }

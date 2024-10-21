@@ -8,6 +8,7 @@ import {
     toReducedEchelonForm,
     toAugmentedMatrix,
     identityMatrix,
+    inverse,
 } from "./arithmetic";
 
 describe("add", () => {
@@ -321,6 +322,46 @@ describe("identity matrix", () => {
         expect(result.rows).toEqual([
             [1, 0],
             [0, 1],
+        ]);
+    });
+});
+
+describe("inverse", () => {
+    test("should throw an error when calculating the inverse of a non-square matrix", () => {
+        expect(() => inverse(new Matrix([[1, 2]]))).toThrow("Matrix must be square");
+    });
+
+    // test("should throw an error when calculating the inverse of a matrix with a determinant of zero", () => {
+    //     expect(() => inverse(new Matrix([[1, 1], [2, 2]])).toThrow("Matrix must have a non-zero determinant");
+    // });
+
+    test("should calculate the inverse of a 2x2 matrix", () => {
+        const result = inverse(
+            new Matrix([
+                [1, 2],
+                [3, 4],
+            ])
+        );
+
+        expect(result.rows).toEqual([
+            [-2, 1],
+            [1.5, -0.5],
+        ]);
+    });
+
+    test("should calculate the inverse of a 3x3 matrix", () => {
+        const result = inverse(
+            new Matrix([
+                [1, 2, 3],
+                [0, 1, 4],
+                [5, 6, 0],
+            ])
+        );
+
+        expect(result.rows).toEqual([
+            [-24, 18, 5],
+            [20, -15, -4],
+            [-5, 4, 1],
         ]);
     });
 });
