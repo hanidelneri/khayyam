@@ -1,4 +1,4 @@
-import { leastCommendMultiple } from "../natural_number/arithmetic";
+import { leastCommendMultiple, normalizeZero } from "../natural_number/arithmetic";
 import { Matrix } from "./matrix";
 
 export function add(a: Matrix, b: Matrix): Matrix {
@@ -41,7 +41,7 @@ function reduceRowsByMultiplication(a: number[], b: number[]): number {
 
 export function transpose(a: Matrix): Matrix {
     const result = new Matrix();
-    
+
     a.columns.forEach((column) => {
         result.addRow(column);
     });
@@ -79,8 +79,8 @@ export function toReducedEchelonForm(a: Matrix, index?: number): Matrix {
     }
     const result = a.clone();
 
-    for (let i = 0; i < a.numberOfRows; i++) {
-        const pivot = a.getRow(i)?.[i];
+    for (let i = 0; i < Math.min(a.numberOfRows, a.numberOfColumns); i++) {
+        const pivot = result.getRow(i)?.[i];
         if (pivot === undefined) {
             throw new Error(`Pivot element at row ${i} is undefined`);
         }
@@ -102,7 +102,7 @@ export function toReducedEchelonForm(a: Matrix, index?: number): Matrix {
             if (pivot) {
                 result.replaceRow(
                     i,
-                    row.map((value) => value / pivot)
+                    row.map((value) => normalizeZero(value / pivot))
                 );
             }
         }
@@ -117,8 +117,8 @@ export function reduceRowsComparedToPivot(pivotRow: number[], targetRow: number[
     }
     const lcm = leastCommendMultiple(pivotRow[pivotIndex], targetRow[pivotIndex]);
 
-    return targetRow.map(
-        (value, index) => (value * lcm) / targetRow[pivotIndex] - (pivotRow[index] * lcm) / pivotRow[pivotIndex]
+    return targetRow.map((value, index) =>
+        normalizeZero((value * lcm) / targetRow[pivotIndex] - (pivotRow[index] * lcm) / pivotRow[pivotIndex])
     );
 }
 

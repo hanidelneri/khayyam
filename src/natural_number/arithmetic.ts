@@ -9,3 +9,7 @@ export function greatestCommonDivisor(a: number, b: number): number {
 
     return greatestCommonDivisor(b, a % b);
 }
+
+export function normalizeZero(value: number): number {
+    return value === 0 ? 0 : value;
+}
