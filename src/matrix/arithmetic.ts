@@ -49,7 +49,7 @@ export function transpose(a: Matrix): Matrix {
     return result;
 }
 
-export function toEchelonFrom(a: Matrix): Matrix {
+export function toEchelonForm(a: Matrix): Matrix {
     const result = a.clone();
 
     for (let i = 0; i < Math.min(a.numberOfColumns, a.numberOfRows); i++) {

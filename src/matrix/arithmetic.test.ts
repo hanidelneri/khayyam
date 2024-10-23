@@ -3,7 +3,7 @@ import {
     add,
     multiply,
     transpose,
-    toEchelonFrom,
+    toEchelonForm,
     reduceRowsComparedToPivot,
     toReducedEchelonForm,
     toAugmentedMatrix,
@@ -155,7 +155,7 @@ describe("echelon-form", () => {
     });
 
     test("should convert a matrix to echelon form for square matrix", () => {
-        const result = toEchelonFrom(
+        const result = toEchelonForm(
             new Matrix([
                 [1, 2, 3],
                 [4, 5, 6],
@@ -170,7 +170,7 @@ describe("echelon-form", () => {
     });
 
     test("should convert a matrix to echelon form for non-square matrix", () => {
-        let result = toEchelonFrom(
+        let result = toEchelonForm(
             new Matrix([
                 [1, 2, 3, 4],
                 [5, 6, 7, 8],
@@ -183,7 +183,7 @@ describe("echelon-form", () => {
             [0, 0, 0, 0],
         ]);
 
-        result = toEchelonFrom(
+        result = toEchelonForm(
             new Matrix([
                 [1, 2],
                 [3, 4],
@@ -276,17 +276,6 @@ describe("echelon-form", () => {
             [1, 0, -1],
             [0, 1, 2],
         ]);
-    });
-
-    test("test", () => {
-        const result = toEchelonFrom(
-            new Matrix([
-                [1, 1, -1],
-                [2, 1, -2],
-                [-3, 0, 1],
-                [4, 2, 1],
-            ])
-        );
     });
 });
 
